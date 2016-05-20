@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from callout.models import User, Beacon, Workspace, Status, Subscription
-from callout.serializers import UserSerializer, UserListSerializer, BeaconSerializer, WorkspaceSerializer, StatusSerializer, SubscriptionGetSerializer, SubscriptionPostSerializer
+from callout.serializers import UserSerializer, UserListSerializer, BeaconSerializer, WorkspaceSerializer, StatusSerializer, SubscriptionListGetSerializer, SubscriptionGetSerializer, SubscriptionPostSerializer
 
 
 class UserList(generics.ListCreateAPIView):
@@ -51,7 +51,7 @@ class SubscriptionList(APIView):
 
     def get(self, request, format=None):
         subscriptions = Subscription.objects.all()
-        serializer = SubscriptionGetSerializer(subscriptions, many=True)
+        serializer = SubscriptionListGetSerializer(subscriptions, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
