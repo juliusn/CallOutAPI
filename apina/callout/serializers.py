@@ -23,6 +23,7 @@ class BeaconSerializer(serializers.ModelSerializer):
 class WorkspaceSerializer(serializers.ModelSerializer):
     attendees = serializers.SerializerMethodField()
     admins = serializers.SerializerMethodField()
+    beacons = serializers.SerializerMethodField()
 
     class Meta:
         model = Workspace
@@ -38,12 +39,39 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         serializer = UserSerializer(instance=admins, many=True)
         return serializer.data
 
+    def get_beacons(self, workspace):
+        beacons = workspace.beacons
+        serializer = BeaconSerializer(instance=beacons, many=True)
+        return serializer.data
 
-class SubscriptionGetSerializer(serializers.ModelSerializer):
+
+class SubscriptionListGetSerializer(serializers.ModelSerializer):
+    currentstatus = serializers.SerializerMethodField()
+
     class Meta:
         model = Subscription
         fields = '__all__'
         depth = 1
+
+    def get_currentstatus(self, subscription):
+        currentstatus = Status.objects.filter(subscription=subscription).order_by('-date_created')[0]
+        serializer = StatusSerializer(instance=currentstatus, many=False)
+        return serializer.data
+
+
+class SubscriptionGetSerializer(serializers.ModelSerializer):
+    statushistory = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+        depth = 1
+
+    def get_statushistory(self, subscription):
+        statushistory = Status.objects.filter(subscription=subscription).order_by('-date_created')
+        serializer = StatusSerializer(instance=statushistory, many=True)
+        return serializer.data
+
 
 class SubscriptionPostSerializer(serializers.ModelSerializer):
     class Meta:
