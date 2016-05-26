@@ -29,7 +29,7 @@ class BeaconDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class WorkspaceList(APIView):
 
-    def get(selfself, request, format=None):
+    def get(self, request, format=None):
         workspaces = Workspace.objects.all()
         serializer = WorkspaceGetSerializer(workspaces, many=True)
         return Response(serializer.data)
