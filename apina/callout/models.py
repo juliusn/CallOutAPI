@@ -30,7 +30,7 @@ class Beacon(models.Model):
 
 class Workspace(models.Model):
     creator = models.ForeignKey(
-        'auth.User',
+        'User',
         related_name='workspaces',
     )
     date_starting = models.DateField(null=True)
