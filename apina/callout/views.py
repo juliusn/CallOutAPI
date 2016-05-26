@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from callout.models import User, Beacon, Workspace, Status, Subscription
-from callout.serializers import UserSerializer, UserListSerializer, BeaconSerializer, WorkspaceSerializer, StatusSerializer, SubscriptionListGetSerializer, SubscriptionGetSerializer, SubscriptionPostSerializer
+from callout.serializers import UserSerializer, UserListSerializer, BeaconSerializer, WorkspaceGetSerializer, WorkspacePostSerializer, StatusSerializer, SubscriptionListGetSerializer, SubscriptionGetSerializer, SubscriptionPostSerializer
 
 
 class UserList(generics.ListCreateAPIView):
@@ -27,14 +27,23 @@ class BeaconDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BeaconSerializer
 
 
-class WorkspaceList(generics.ListCreateAPIView):
-    queryset = Workspace.objects.all()
-    serializer_class = WorkspaceSerializer
+class WorkspaceList(APIView):
+
+    def get(selfself, request, format=None):
+        workspaces = Workspace.objects.all()
+        serializer = WorkspaceGetSerializer(workspaces, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = WorkspacePostSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Workspace.objects.all()
-    serializer_class = WorkspaceSerializer
+    serializer_class = WorkspaceGetSerializer
 
 
 class StatusList(generics.ListCreateAPIView):

@@ -20,7 +20,7 @@ class BeaconSerializer(serializers.ModelSerializer):
         fields = ('id', 'major', 'minor', 'uuid')
 
 
-class WorkspaceSerializer(serializers.ModelSerializer):
+class WorkspaceGetSerializer(serializers.ModelSerializer):
     attendees = serializers.SerializerMethodField()
     admins = serializers.SerializerMethodField()
     beacons = serializers.SerializerMethodField()
@@ -43,6 +43,12 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         beacons = workspace.beacons
         serializer = BeaconSerializer(instance=beacons, many=True)
         return serializer.data
+
+
+class WorkspacePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workspace
+        fields = '__all__'
 
 
 class SubscriptionListGetSerializer(serializers.ModelSerializer):
